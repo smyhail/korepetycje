@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Spring Boot Thymeleaf Application - Bootstrap DataTable</title>
+
+    <link th:href="@{css/datatables.css}" th:rel="stylesheet"/>
+    <link th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} " th:rel="stylesheet"/>
+
+</head>
+<body>
+
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Thymeleaf - Bootstrap DataTable</a>
+        <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler"
+                data-target="#navbarResponsive"
+                data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <div class="jumbotron ">
+        <h1 class="display-4 text-center">Spring Boot Application</h1>
+
+
+    </div>
+    <button class="btn btn-success nBtn btn-lg btn-block  ">Dodaj nowego pacjenta</button>
+    <div class="card">
+        <div class="card-block">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Imię</th>
+                    <th>Nazwisko</th>
+                    <th>Miasto</th>
+                    <th>Status<br>badania</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="person:${data.content}">
+                    <td th:text="${person.id}"></td>
+                    <td th:text="${person.name}"></td>
+                    <td th:text="${person.surname}"></td>
+                    <td th:text="${person.city}"></td>
+                    <td th:text="${person.status}"></td>
+                    <td><a class="btn btn-danger delBtn" th:href="@{delete/(id=${person.id})}">Usun</a></td>
+                    <td><a class="btn btn-primary eBtn" th:href="@{findOne/(id=${person.id})}">Edytuj</a></td>
+                </tr>
+                </tbody>
+            </table>
+            <hr>
+        </div>
+        <div>
+            <ul class="nav nav-pills  nav-justified">
+                <li class="nav-item" th:each="i :${#numbers.sequence(0,data.totalPages-1)}">
+                    <a class="nav-link" th:classappend="${currentPage}==${i}?'active':''" th:href="@{/(page=${i})}"
+                       th:text="${i+1}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div align="center">
+        <a th:href="@{/displayBarGraph}">Bar-Graph</a><br/> <br/> <a
+            th:href="@{/displayPieChart}">Pie-Chart</a>
+    </div>
+
+
+    <div class="myForm">
+        <form method="post" th:action="@{/save}" th:object="${country}">
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel2" class="modal fade" id="exampleModal"
+                 role="dialog" tabindex="-1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel2">Update or Create</h5>
+                            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h3>Modal Body</h3>
+
+
+                            <div class="form-group">
+                                <label class="form-control-label" for="id">ID:</label>
+                                <input class="form-control" id="id" name="id" readonly type="text" value=""/>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="form-control-label" for="firstName">Imię:</label>
+                                <input class="form-control" id="firstName" name="firstName" type="text" value=""/>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label" for="lastName">Nazwisko:</label>
+                                <input class="form-control" id="lastName" name="lastName" type="text" value=""/>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label" for="cities">Misto:</label>
+                                <input class="form-control" id="cities" name="cities" type="text" value=""/>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label" for="testStatus">Status badania:</label>
+                                <select class="form-control" id="testStatus" name="testStatus" required value="">
+                                    <option>true</option>
+                                    <option>false</option>
+                                </select>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Wyjdz</button>
+                            <input class="btn btn-primary" type="submit" value="Zapisz"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="myModal" role="dialog"
+         tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Usywanie pacjenta z listy</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="alert alert-danger">Czy aby na pewno chcesz usunąc ten rekord?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                    <a class="btn btn-danger" href="" id="delRef">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{js/datatables.js}"></script>
+
+
+</body>
+</html>
